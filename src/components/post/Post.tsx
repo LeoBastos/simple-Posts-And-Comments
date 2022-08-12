@@ -3,10 +3,26 @@ import ptBR from 'date-fns/locale/pt-BR'
 import { Comment } from '../comment/Comment';
 import { Avatar } from '../avatar/Avatar';
 import styles from './Post.module.css';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
 
+interface Author{
+  name: string;
+  role: string;
+  avatarUrl: string;
+}
 
-export function Post({ author, publishedAt, content }) {
+interface Content {
+  type: 'paragraph' | 'link';
+  content: string;
+}
+
+interface PostProps {
+  author: Author;
+  publishedAt: Date;
+  content: Content[];
+}
+
+export function Post({ author, publishedAt, content }: PostProps) {
 
   const [comments, setComments] = useState([
     'Post Legal',
@@ -23,27 +39,27 @@ export function Post({ author, publishedAt, content }) {
     addSuffix: true
   })
 
-  function handleCreateNewComment() {
+  function handleCreateNewComment(event: FormEvent) {
     event.preventDefault()  
 
     setComments([...comments, newCommentText])
     setNewCommentText('') 
   }
 
-  function handleNewCommentChange(){
+  function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>){
     event.target.setCustomValidity('')
     setNewCommentText(event.target.value)
   }
 
-  function deleteComment(commentToDelete){
+  function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>){
+    event.target.setCustomValidity('Este campo é obrigatório!')
+  }
+
+  function deleteComment(commentToDelete: string){
     const newCommentList = comments.filter(comment => {
       return comment !== commentToDelete
     })
     setComments(newCommentList)
-  }
-
-  function handleNewCommentInvalid(){
-    event.target.setCustomValidity('Este campo é obrigatório!')
   }
 
   const isNewCommentEmpty = newCommentText.length === 0
@@ -54,7 +70,7 @@ export function Post({ author, publishedAt, content }) {
         <div className={styles.author}>
 
           <Avatar
-            src={author.avatarUrl}
+            src={author.avatarUrl}            
           />
 
           <div className={styles.authorInfo}>
