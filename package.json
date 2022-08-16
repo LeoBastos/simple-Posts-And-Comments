@@ -2,6 +2,7 @@
   "name": "01-fundamentos",
   "private": true,
   "version": "0.0.0",
+  "homepage": "simple-Posts-And-Comments/",
   "type": "module",
   "scripts": {
     "dev": "vite",
